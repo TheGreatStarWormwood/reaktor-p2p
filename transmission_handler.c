@@ -14,6 +14,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+void print_line() { printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"); }
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa) {
   if (sa->sa_family == AF_INET) {
@@ -50,6 +51,7 @@ void *receive_message(void *r_params) {
     printf("Received data\n");
 
     int their_port;
+    print_line();
     printf("listener: got packet from %s : %d\n",
            inet_ntop(their_addr.ss_family,
                      get_in_addr((struct sockaddr *)&their_addr), s, sizeof(s)),
@@ -58,6 +60,7 @@ void *receive_message(void *r_params) {
     printf("listener: packet is %d bytes long\n", numbytes);
     rbuf[numbytes] = '\0';
     printf("listener: packet contains \"%s\"\n", rbuf);
+    print_line();
   }
 }
 
