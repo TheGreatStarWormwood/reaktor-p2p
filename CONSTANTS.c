@@ -19,5 +19,9 @@ struct r_params {
 struct s_params {
   int my_sockfd;
   struct sockaddr_in listener_addr;
-  int BUFFER_SIZE;
+  int buf_size;
+};
+
+struct write_params {
+  int my_sockfd;
 };

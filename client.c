@@ -22,16 +22,41 @@
 #define BUFFER_SIZE 256
 #define LISTENER_ADDR "127.0.0.1"
 
-//test
+// test
 
-void *write_thread(void *write_params){
+void *write_thread(void *w_params) {
 
+  struct write_params *write_params_t = (struct write_params *)w_params;
+  int my_sockfd = write_params_t->my_sockfd;
 
-  
+  struct sockaddr_in listener_addr;
+
+  int port;
+
+  printf("Enter port number: ");
+  if (scanf("%d", &port) != 1) {
+    fprintf(stderr, "Invalid input\n");
+    exit(EXIT_FAILURE);
+  }
+  memset(&listener_addr, 0, sizeof(listener_addr));
+  listener_addr.sin_family = AF_INET;
+  listener_addr.sin_port = htons(port);
+  listener_addr.sin_addr.s_addr = inet_addr(LISTENER_ADDR);
+
+  struct s_params s_params_t;
+  memset(&s_params_t, 0, sizeof(s_params_t));
+  s_params_t.my_sockfd = my_sockfd;
+  s_params_t.buf_size = BUFFER_SIZE;
+  memcpy(&s_params_t.listener_addr, &listener_addr, sizeof(listener_addr));
+
+  send_message(&s_params_t);
+
+  return 0;
 }
 
-void *recv_thread(void *recv_params){
-  receive_message(recv_params);  
+void *recv_thread(void *recv_params) {
+  receive_message(recv_params);
+  return 0;
 }
 
 int main() {
@@ -99,9 +124,19 @@ int main() {
     exit(EXIT_FAILURE);
   }
 
+  struct write_params write_params_t;
+  memset(&write_params_t, 0, sizeof(write_params_t));
+  write_params_t.my_sockfd = my_sockfd;
+
+  pthread_t wt;
+  if (pthread_create(&wt, NULL, write_thread, &write_params_t) != 0) {
+    perror("r thread create error");
+    exit(EXIT_FAILURE);
+  }
+
   pthread_join(rt, NULL);
+  pthread_join(wt, NULL);
 
   close(my_sockfd);
   return 0;
-  
 }

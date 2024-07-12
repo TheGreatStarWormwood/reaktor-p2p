@@ -66,7 +66,7 @@ void *send_message(void *s_params) {
 
   int my_sockfd = s_params_t->my_sockfd;
   struct sockaddr_in listener_addr = s_params_t->listener_addr;
-  int BUFFER_SIZE = s_params_t->BUFFER_SIZE;
+  int BUFFER_SIZE = s_params_t->buf_size;
 
   char message[BUFFER_SIZE];
   while (1) {
